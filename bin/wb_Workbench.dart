@@ -18,7 +18,7 @@ class WorkBench {
   }
 
   void markTaskAsDone(int taskID, bool done) {
-    if(done) {
+    if (done) {
       tasks[taskID].state = "done";
     } else {
       tasks[taskID].state = "";
@@ -62,6 +62,11 @@ class WorkBench {
     shouldProceed = true;
   }
 
+  void removeTask(int id) {
+    tasks.removeAt(id);
+    shouldProceed = true;
+  }
+
   void archiveTask(Task task, String path) {
     File f = new File(path);
     f.writeAsStringSync(task.toStringWithDate().trim() + "\n\n\n");
@@ -72,8 +77,8 @@ class WorkBench {
   }
 
   static bool shouldUpdate(String str) {
-   DateTime dt = fromString(str);
-   return dt.compareTo(fromString(currentDate())) != 0;
+    DateTime dt = fromString(str);
+    return dt.compareTo(fromString(currentDate())) != 0;
   }
 
   static DateTime fromString(String date) {
@@ -112,7 +117,8 @@ class WorkBench {
   }
 
   static List<Task> parseTasks(String task) {
-    RegExp taskPattern = new RegExp(r">TASK:([Dd]one)?( [Aa]ge:([\d]+))?([^>]+)");
+    RegExp taskPattern =
+        new RegExp(r">TASK:([Dd]one)?( [Aa]ge:([\d]+))?([^>]+)");
     List<Task> tasks = [];
     Iterable<Match> matches = taskPattern.allMatches(task);
     for (Match match in matches) {
@@ -155,7 +161,10 @@ class Task implements Comparable<Task> {
   }
 
   String toString() {
-    return "\n>TASK:" + state + " Age:" + age.toString() + details;
+    return "\n>TASK:" +
+        state +
+        (age > 0 ? " Age:" + age.toString() : "") + " " +
+        details;
   }
 
   String toStringWithDate() {

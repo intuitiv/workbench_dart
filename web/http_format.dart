@@ -80,15 +80,12 @@ String formatTasks(String data) {
   if (completeStatus == 0) {
     completeStatus = 3;
   }
-  var guage = "<br><br><div class='container'>" +
-      "<div class='progress'>" +
-      "<div class='progress-bar progress-bar-striped progress-bar-animated' role='progressbar' aria-valuenow='" +
-      completeStatus.toString() +
-      "' aria-valuemin='0' aria-valuemax='100' style='width:" +
-      completeStatus.toString() +
-      "%'>" +
-      "</div>\n" +
-      "  </div></div>";
+  var guage = "<br><br><div class='container'>"
+      "<div class='progress'>"
+      "<div class='progress-bar progress-bar-striped progress-bar-animated' role='progressbar' aria-valuenow='${completeStatus.toString()}' aria-valuemin='0' aria-valuemax='100' style='width:${completeStatus.toString()}%'>"
+      "</div>"
+      "</div>"
+      "</div>";
 
   var updated = "";
   if (date[1] != null) {
@@ -99,41 +96,45 @@ String formatTasks(String data) {
 }
 
 String formatIndividualTasks(Match m) {
-  int age = int.parse(m.group(3));
+  int age = m.group(3) == null ? 0 : int.parse(m.group(3));
   bool isDone = m.group(1) != null && m.group(1).toLowerCase() == "done";
 
   String cbeValue = "";
-  if(isDone) {
+  if (isDone) {
     cbeValue = "checked";
   }
-  var data = "<lable><input type='checkbox' " + cbeValue + " "
-      "id='cbt_" + globals
-      .total.toString() + "'> "
-      "</lable>";
+  var data =
+      "<lable><input type='checkbox' ${cbeValue} id='cbt_${globals.total.toString()}'> </lable>";
   data += "<h7 style='text-align:left;'><strong>" +
       getHeader(m.group(4)) +
       "</strong>";
   var badge = "";
+  String badgetext = "";
   if (!isDone) {
     if (age > 0) {
-      badge = "badge-warning'> " + age.toString();
+      badge = "badge-warning";
+      badgetext = age.toString();
     } else {
-      badge = "badge-info'>new";
+      badge = "badge-info";
+      badgetext = "new";
     }
   } else {
-    badge = "badge-success'>done";
+    badge = "badge-success";
+    badgetext = "done";
   }
   data +=
-      "<span style='float:right;' class='badge badge-pill " + badge + "</span>";
+      "<span style='float:right;' class='badge badge-pill ${badge}'>${badgetext} "
+      "</span>"
+      "<i style='float:right;' class='fas fa-trash' id='td_${globals.total.toString()}'></i>";
   data += "</h7><br>";
-  data += body(m.group(4)) + "";
+  data += body(m.group(4));
 
   if (isDone) {
-    data = "<del>" + data + "</del>";
+    data = "<del>${data}</del>";
     globals.done++;
   }
   globals.total++;
-  return "<li class='list-group-item'><pre>" + data + "</pre></li>";
+  return "<li class='list-group-item'><pre>${data}</pre></li>";
 }
 
 String getHeader(String text) {
@@ -142,7 +143,7 @@ String getHeader(String text) {
     return text;
   }
   var id = text.substring(0, index);
-  if (id.trim().length == 0) {
+  if (id.trim().isEmpty) {
     id = "Task";
   }
   return id.trim() + " ";
@@ -162,19 +163,19 @@ String body(String txt) {
   for (var i = 0; i < arr.length; i++) {
     String line = arr[i].trim();
     if (line.startsWith("ex: ")) {
-      line = "<mark><code>" + line + "</code></mark>";
+      line = "<mark><code>${line}</code></mark>";
     } else if (line.startsWith("continue")) {
       line = line.replaceAll("continue ->", "<b>continue:</b>");
-      line = "<mark>" + line + "</mark>";
-    } else if (line.indexOf(":") > -1 &&
+      line = "<mark>${line}</mark>";
+    } else if (line.contains(":") &&
         !urlRegex.hasMatch(line) &&
         !fileRegex.hasMatch(line)) {
-      line = "<b>" + line + "</b>";
+      line = "<b>${line}</b>";
     }
-    ret += "  " + line + "\n";
+    ret += "  ${line}\n";
   }
 
-  return customFormatting("  " + ret.trim() + " ");
+  return customFormatting("  ${ret.trim()} ");
 }
 
 String customFormatting(String text) {
@@ -191,8 +192,8 @@ formatSource(String text) {
 
 String imagify(String text) {
   RegExp urlRegex = new RegExp(r"img:[\s]?//([^\s]+)");
-  return text.replaceAllMapped(
-      urlRegex, (match) => '<figure><img src="images/${match[1]}"></figure>');
+  return text.replaceAllMapped(urlRegex,
+      (match) => '<figure><img src="images/${match[1]}" alt=""></figure>');
 }
 
 String urlify(String text) {
@@ -211,15 +212,11 @@ String addPreviewLink(RegExp urlRegex, String text) {
 String replaceRegexForPreviewLink(Match match) {
   int counter = globals.urlCounter++;
   String id = "myModal" + counter.toString();
-  return '<code><a href="${match[0]}" target="_blank">${match[1]} </a><i class="far fa-hand-point-right" data-toggle="modal" data-target="#' +
-      id +
-      '" ></i></code>' +
-      '<div class="modal fade" id="' +
-      id +
-      '" style="top:10%; left: 50%;" tabindex="0"><div class="modal-dialog modal-lg"><div class="modal-content">' +
-      '<div class="modal-header">\n' +
-      '<h4 class="modal-title">URL Preview</h4>' +
-      '          <button type="button" class="close" data-dismiss="modal">&times;</button>\n' +
-      '        </div>' +
+  return '<code><a href="${match[0]}" target="_blank">${match[1]} </a><i '
+      'class="far fa-hand-point-right" data-toggle="modal" '
+      'data-target="#${id}"></i></code> <div class="modal fade" id="${id}" style="top:10%; left: 50%;" '
+      'tabindex="0"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header">\n' +
+      '<h4 class="modal-title">URL Preview</h4><button type="button" '
+      'class="close" data-dismiss="modal">X</button>\n</div>' +
       '<div><object type="text/html" data="${match[0]}" width="800px" height="800px" style="overflow:auto;border:2px ridge blue">Cannot preview URL</object></div></div></div></div>';
 }

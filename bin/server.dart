@@ -33,6 +33,22 @@ void handleRequest(HttpRequest request) async {
       wb.markTaskAsDone(int.parse(taskID), state.toLowerCase() == 'true');
       wb.updateWorkBench(workBenchFile);
       break;
+    case '/addTask':
+      var taskDesc = Uri.splitQueryString(payload)['task'];
+      print("add ${taskDesc}");
+      String workBenchFile = "/run/media/sainath/WindowsSSD/wb_dart/web/data/_tasks";
+      WorkBench wb = WorkBench.parse(WorkBench.readFile(workBenchFile));
+      wb.addTask(taskDesc);
+      wb.updateWorkBench(workBenchFile);
+      break;
+    case '/removeTask':
+      var taskID = Uri.splitQueryString(payload)['num'];
+      print("remove ${taskID}");
+      String workBenchFile = "/run/media/sainath/WindowsSSD/wb_dart/web/data/_tasks";
+      WorkBench wb = WorkBench.parse(WorkBench.readFile(workBenchFile));
+      wb.removeTask(int.parse(taskID));
+      wb.updateWorkBench(workBenchFile);
+      break;
     default:
     // TODO: Forward to static file server
   }
