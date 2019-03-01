@@ -67,6 +67,7 @@ Future loadFile(String fileName) async {
     el.children.add(pretext);
 
     var fileData;
+    print("loading file ${fileName}");
     await read("data/_${fileName}").then((val) => fileData = val);
 
     String formattedData = format.formatData(fileName, fileData);
@@ -147,9 +148,8 @@ postEdit(Event e) async {
   String tab = el.id.substring(2, el.id.length);
   TextAreaElement tael = querySelector("#t_${tab}");
   var data = {'tab': tab, 'data': tael.value};
-  HttpRequest.postFormData("http://localhost:4040/updatetab", data);
-  await new Future.delayed(const Duration(milliseconds: 500), () => "1");
-  loadFile(tab);
+  await HttpRequest.postFormData("http://localhost:4040/updatetab", data);
+  await loadFile(tab);
   loadFinish();
   globals.editInProgress = false;
 }
