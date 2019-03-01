@@ -7,6 +7,7 @@ import 'package:angular/core.dart';
 @Injectable()
 class TodoListService {
   List<Task> todoList = <Task>[];
+  bool offline = false;
 
   Future<List<Task>> getTodoList() async {
     await fetchTasks();
@@ -15,20 +16,27 @@ class TodoListService {
 
   fetchTasks() async {
     String resp;
-    print("fetching.");
-    await HttpRequest.getString("http://localhost:4040/getAllTasks")
-        .then((ret) => (resp = ret));
-    var json = jsonDecode(resp);
-    print(json);
-    todoList.clear();
-    List taskList = json['tasklist'];
-    int numOdTasks = taskList.length;
-    for (int i = 0; i < numOdTasks; i++) {
-      var jsonTask = json['tasklist'][i];
-      Task t = new Task(
-          jsonTask['detailshead'], jsonTask['age'], jsonTask['detailsbody']);
-      t.isDone = jsonTask['state'] == 'done';
-      todoList.add(t);
+    print("fetching tasks in service.");
+    try {
+      await HttpRequest.getString("http://localhost:4040/getAllTasks")
+          .then((ret) => (resp = ret));
+    } catch (Exception) {}
+    if (resp != null && resp.isNotEmpty) {
+      var json = jsonDecode(resp);
+      print(json);
+      todoList.clear();
+      List taskList = json['tasklist'];
+      int numOdTasks = taskList.length;
+      for (int i = 0; i < numOdTasks; i++) {
+        var jsonTask = json['tasklist'][i];
+        Task t = new Task(
+            jsonTask['detailshead'], jsonTask['age'], jsonTask['detailsbody']);
+        t.isDone = jsonTask['state'] == 'done';
+        todoList.add(t);
+      }
+    } else {
+      print("device offline");
+      offline = true;
     }
   }
 

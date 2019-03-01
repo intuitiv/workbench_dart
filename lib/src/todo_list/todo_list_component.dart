@@ -39,6 +39,10 @@ class TodoListComponent implements OnInit {
     return ret;
   }
 
+  bool isOffline() {
+    return todoListService.offline;
+  }
+
   void add() {
     items.add(new Task(newTodo, "new", ""));
     todoListService.addTaskEvent(newTodo);

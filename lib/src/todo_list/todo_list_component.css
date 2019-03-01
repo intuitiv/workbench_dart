@@ -26,7 +26,7 @@ li material-fab {
     text-decoration: line-through;
 }
 
-.new, .ongoing {
+.new, .ongoing, .offlinebanner  {
     height: 22px;
     margin: 7px;
     font-size: 75%;
@@ -44,4 +44,10 @@ li material-fab {
 .ongoing {
     color: #212529;
     background-color: #ffc107;
+}
+
+.offlinebanner {
+    display: block;
+    max-width: 500px;
+    padding: 5px;
 }
