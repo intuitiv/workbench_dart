@@ -1,8 +1,9 @@
 import 'dart:core';
 import 'dart:io';
-
+import 'package:json_annotation/json_annotation.dart';
 import 'package:intl/intl.dart';
 
+@JsonSerializable()
 class WorkBench {
   List<Task> tasks;
   bool shouldProceed = false;
@@ -45,6 +46,16 @@ class WorkBench {
 
     String task = convertTasksToString(tasks);
     return task.trim() + "\n\n\n" + postTask.trim();
+  }
+
+  String getJSON() {
+    String toRet = "{\"tasklist\":[";
+    tasks.sort((a, b) => b.age - a.age);
+    tasks.forEach((task) => {
+          toRet += task.toJson().toString() +
+              (tasks.indexOf(task) == tasks.length - 1 ? "" : ",")
+        });
+    return toRet + "]}";
   }
 
   bool shouldUpdateDump() {
@@ -145,6 +156,7 @@ class WorkBench {
   }
 }
 
+@JsonSerializable()
 class Task implements Comparable<Task> {
   int age;
   String state;
@@ -163,8 +175,30 @@ class Task implements Comparable<Task> {
   String toString() {
     return "\n>TASK:" +
         state +
-        (age > 0 ? " Age:" + age.toString() : "") + " " +
+        (age > 0 ? " Age:" + age.toString() : "") +
+        " " +
         details;
+  }
+
+  Map<String, dynamic> toJson() => {
+        '\"state\"': "\"${state}\"",
+        '\"age\"': "\"${age}\"",
+        '\"detailshead\"': "\"${getDetailsHead().trim()}\"",
+        '\"detailsbody\"': "\"${getDetailsBody().trim()}\""
+      };
+
+  String getDetailsHead() {
+    return details.split("\n")[0];
+  }
+
+  String getDetailsBody() {
+    String ret = "";
+    List<String> lines = details.split("\n");
+
+    for (int i = 1; i < lines.length; i++) {
+      ret += lines[i].trim() + "-n-";
+    }
+    return ret;
   }
 
   String toStringWithDate() {

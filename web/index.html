@@ -43,7 +43,7 @@
     <div style="background: #555;color: #fff;font-family: Merienda; -webkit-font-smoothing:antialiased ">
         <marquee id="totd" behavior="scroll" direction="left" scrollamount="10">Trick of the day:</marquee>
     </div>
-    <div class="content">
+    <div class="content" id="tablist">
         <ul class="nav nav-pills nav-justified" role="tablist">
             <li class="nav-item">
                 <a class="nav-link active" data-toggle="pill" href="#tasks"><i class="fas fa-tasks"
@@ -76,7 +76,7 @@
         </ul>
 
         <div class="tab tab-content">
-            <div id="tasks" class="tabarea tab-pane active"></div>
+            <div id="tasks" class="tabarea tab-pane active"><my-app>Loading...</my-app></div>
             <div id="read" class="tabarea tab-pane fade"></div>
             <div id="todo" class="tabarea tab-pane fade"></div>
             <div id="wb" class="tabarea tab-pane fade"></div>

@@ -1,4 +1,6 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto);
+@import url(https://fonts.googleapis.com/css?family=Material+Icons);
+@import url(https://fonts.googleapis.com/css?family=Roboto);
 @import url(https://fonts.googleapis.com/css?family=Merienda);
 @import url(https://fonts.googleapis.com/css?family=Kalam);
 @import url(https://fonts.googleapis.com/css?family=Gruppo);
@@ -54,6 +56,7 @@ pre, .ta {
     font-family: 'Lucida Sans Unicode', 'Lucida Grande', sans-serif !important;
     margin-bottom: 0px !important;
     white-space: pre-wrap;
+    line-height: initial;
 }
 
 /* badge */
@@ -74,6 +77,9 @@ pre, .ta {
 .tabarea {
     border: 1px solid #f2f1f1;
     padding: 4px 15px;
+    max-width: 1500px;
+    margin: auto;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
 }
 
 p {

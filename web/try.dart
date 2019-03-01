@@ -1,36 +1,11 @@
-import 'package:intl/intl.dart';
+import 'package:http/http.dart';
+import 'dart:convert';
 
 main(List<String> args) {
-  print(new DateFormat("dd/MM/yyyy").format(DateTime.now()));
+  post("http://localhost:4040/getAllTasks").then((response) =>handleResponse
+    (response));
 }
 
-String processMatch(Match match) {
-  print("first -> ${match[1]}");
-  return "";
-}
-
-class Date {
-  int date;
-  int month;
-  int year;
-
-  Date(int date, int month, int year) {
-    this.date = date;
-    this.month = month;
-    this.year = year;
-  }
-
-  String toString() {
-    return date.toString() + "/" + month.toString() + "/" + year.toString();
-  }
-
-  static String currentDate() {
-    return new Date(DateTime
-        .now()
-        .day, DateTime
-        .now()
-        .month, DateTime
-        .now()
-        .year).toString();
-  }
+handleResponse(Response res) {
+  print(jsonDecode(res.body)['tasklist'][0]['age']);
 }

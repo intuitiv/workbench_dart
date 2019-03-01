@@ -2,9 +2,12 @@ import 'dart:async';
 import 'dart:html';
 import 'dart:math';
 
-import 'http_format.dart' as format;
+import 'package:angular/angular.dart';
 import 'package:http/http.dart';
+import 'package:wb_dart/app_component.template.dart' as ng;
+
 import 'globals.dart' as globals;
+import 'http_format.dart' as format;
 
 const List<String> tabs = [
   "tasks",
@@ -44,13 +47,13 @@ loadWB() {
 Future loadFile(String fileName) async {
   Element el = querySelector("#${fileName}");
   if (el != null) {
+    if (fileName == 'tasks') {
+      runApp(ng.AppComponentNgFactory);
+      return;
+    }
     el.children.clear();
     el.style.removeProperty("display");
 
-    if (fileName == 'tasks') {
-      el.children.add(addTaskElement());
-    }
-//    addBadge("Edit", "e_" + fileName, el).onClick.listen(editATab);
     addIcon("icns fas fa-edit", "e_${fileName}", el).onClick.listen(editATab);
 
     Element pretext = new Element.pre();
@@ -66,82 +69,7 @@ Future loadFile(String fileName) async {
       querySelector("#totd").text =
           "Trick of the day: " + format.getRandomTrick(fileData);
     }
-    if (fileName == 'tasks') {
-      for (int i = 0; i < globals.total; i++) {
-        querySelector("#cbt_${i.toString()}").onChange.listen(changeTaskState);
-        querySelector("#td_${i.toString()}").onClick.listen(deleteTaskEvent);
-      }
-    }
   }
-}
-
-deleteTaskEvent(Event e) async {
-  print("deleteTaskEvent");
-  Element el = e.target;
-  String taskNum = el.id.substring(3); //td_
-  var data = {
-    'num': taskNum,
-  };
-  print(data);
-  HttpRequest.postFormData("http://localhost:4040/removeTask", data);
-  await new Future.delayed(const Duration(milliseconds: 500), () => "1");
-  loadFile('tasks');
-}
-
-DivElement addTaskElement() {
-  DivElement div = new DivElement();
-  div.id = "addTask";
-  div.classes.add("container");
-  div.classes.add("mt-3");
-  div.classes.add("input-group");
-  div.classes.add("mb-3");
-
-  DivElement buttonDiv = new DivElement();
-  buttonDiv.classes.add("input-group-append");
-  ButtonElement addButton = new ButtonElement();
-  addButton.classes.add("btn");
-  addButton.classes.add("btn-primary");
-  addButton.type = "button";
-  addButton.text = "Add Task";
-  buttonDiv.children.add(addButton);
-  addButton.onClick.listen(addTaskEvent);
-
-  InputElement taskDesc = new InputElement();
-  taskDesc.id = "addTaskInput";
-  taskDesc.classes.add("form-control");
-  taskDesc.placeholder = "Task description...";
-  taskDesc.onKeyUp.listen(onPressingENTER);
-  div.children.add(taskDesc);
-  div.children.add(buttonDiv);
-
-  return div;
-}
-
-onPressingENTER(KeyboardEvent keyboardEvent) {
-  var keyEvent = new KeyEvent.wrap(keyboardEvent);
-  if (keyEvent.keyCode == KeyCode.ENTER) {
-    addTaskEvent(keyboardEvent);
-  }
-}
-
-addTaskEvent(Event e) async {
-  InputElement el = querySelector("#addTaskInput");
-  var data = {'task': el.value};
-  HttpRequest.postFormData("http://localhost:4040/addTask", data);
-  await new Future.delayed(const Duration(milliseconds: 500), () => "1");
-  loadFile('tasks');
-  print(el.value);
-}
-
-changeTaskState(Event e) async {
-  Element el = e.target;
-  String taskNum = el.id.substring(4); //cbt_
-  CheckboxInputElement cbe = el;
-  var data = {'num': taskNum, 'state': cbe.checked.toString()};
-  print(data);
-  HttpRequest.postFormData("http://localhost:4040/markTaskAsDone", data);
-  await new Future.delayed(const Duration(milliseconds: 500), () => "1");
-  loadFile('tasks');
 }
 
 class DummyTreeSanitizer implements NodeTreeSanitizer {

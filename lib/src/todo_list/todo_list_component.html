@@ -1,0 +1,38 @@
+<!-- Components info: https://webdev.dartlang.org/components -->
+
+<div style="padding-top: 20px; padding-left: 100px">
+    <!--<material-chip style='float:right;' [removable]="false" class='{{getBadgeClass(item)}}'>{{item.age}}</material-chip>-->
+    <br>
+    <material-input label="Share your tasks with me... I'll track them for you."
+                    autoFocus floatingLabel style="width:80%"
+                    [(ngModel)]="newTodo"
+                    (keyup.enter)="add()">
+    </material-input>
+
+    <material-fab mini raised
+                  (trigger)="add()"
+                  [disabled]="newTodo.isEmpty">
+        <material-icon icon="add"></material-icon>
+    </material-fab>
+</div>
+
+<p *ngIf="amIFree()">
+    <strong> Yayy.... No tasks... It's learning-somethin-NEW time...</strong>
+</p>
+
+<div *ngIf="items.isNotEmpty">
+    <ul>
+        <li *ngFor="let item of items; let i=index">
+            <div style="padding: 10px;">
+                <material-checkbox [(checked)]="item.isDone" (change)="isDone(i)" #done materialTooltip="Mark item as done">
+                </material-checkbox>
+                <span [class.done]="done.checked"><h7 style="text-align:left;"><strong>{{item.title}}</strong></h7></span>
+                <material-chip style='float:right;' [removable]="false" class='{{getBadgeClass(item)}}'>{{item.age}}</material-chip>
+                <material-fab style='float:right;' mini (trigger)="remove(i)">
+                    <material-icon icon="delete"></material-icon>
+                </material-fab>
+                <span [class.done]="done.checked"><pre><code>{{item.desc}}</code></pre></span>
+            </div>
+        </li>
+    </ul>
+</div>
