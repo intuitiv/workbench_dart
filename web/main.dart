@@ -24,6 +24,12 @@ void main() {
   loadWB();
   globals.r = new Random.secure();
   loadFinish();
+  window.onBeforeUnload.listen((Event e) {
+    BeforeUnloadEvent be = e;
+    if(globals.editInProgress) {
+      be.returnValue = "Don't levae";
+    }
+  });
 }
 
 loadFinish() async {
@@ -38,6 +44,7 @@ loadStart() async {
 
 loadData(Event e) {
   loadWB();
+  globals.editInProgress = false;
 }
 
 loadWB() {
@@ -106,6 +113,8 @@ Element addBadge(String text, String id, Element parent) {
 }
 
 editATab(Event e) {
+  globals.editInProgress = true;
+
   Element el = e.target;
   String tab = el.id.substring(2, el.id.length);
   TextAreaElement textArea = new Element.textarea();
@@ -142,6 +151,7 @@ postEdit(Event e) async {
   await new Future.delayed(const Duration(milliseconds: 500), () => "1");
   loadFile(tab);
   loadFinish();
+  globals.editInProgress = false;
 }
 
 cancelEdit(Event e) {

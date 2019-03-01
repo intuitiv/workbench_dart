@@ -33,11 +33,6 @@ class TodoListComponent implements OnInit {
     items = await todoListService.getTodoList();
   }
 
-  void fetch() async {
-    todoListService.fetchTasks();
-    await todoListService.getTodoList().then((value) => items = value);
-  }
-
   bool amIFree() {
     bool ret = true;
     items.forEach((task) => !task.isDone ? ret = false : ret = ret );
