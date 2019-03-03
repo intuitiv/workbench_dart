@@ -1,4 +1,5 @@
 import 'todo_list_service.dart';
+import 'todo_list_component.dart';
 import 'dart:collection';
 
 import 'dart:html';
@@ -6,24 +7,99 @@ import 'dart:html';
 class OfflineSync {
   Queue<Action> actions;
   TodoListService todoListService;
+  TodoListComponent todoListComponent;
 
-  OfflineSync(TodoListService service) {
+  bool active = true;
+  bool completeSync = false;
+
+  int pingFreq = 60;
+
+  OfflineSync(TodoListService service, TodoListComponent todoListComponent) {
     todoListService = service;
+    this.todoListComponent = todoListComponent;
     actions = new Queue();
-  }
-
-  List<Task> syncItems(List<Task> onDisk, List<Task> inMemory) {
-    print("syncing items...");
-  }
-
-  queue(Action action) async{
-    actions.add(action);
-    try {
-      await action.performAction();
-    } catch(exception) {
-      print('exception caught executing ${action.actionName}');
+    if (todoListComponent.serverOffline) {
+      completeSync = true;
+      startSync();
     }
-    print("QueueLength: " + actions.length.toString());
+  }
+
+  setActive(bool active) {
+    this.active = active;
+  }
+
+  startSync() async {
+    for (; todoListComponent.serverOffline;) {
+      print("syncing.." + DateTime.now().toString());
+      try {
+        await HttpRequest.getString("http://localhost:4040/health");
+        if (todoListComponent.serverOffline) {
+          if (completeSync) {
+          } else {
+            await deltaSync();
+            return;
+          }
+        }
+      } catch (excep) {
+        print('server offline in health ping ' + excep.toString());
+        todoListComponent.serverOffline = true;
+      }
+      await wait(10);
+    }
+  }
+
+  wait(int timeInSec) async {
+    print(timeInSec.toString() + " time to wait");
+    await new Future.delayed(Duration(seconds: timeInSec), () => "1");
+  }
+
+  bool shouldQueueItems() {
+    return todoListComponent.serverOffline;
+  }
+
+  deltaSync() async {
+    print("delta syncing items...");
+    Action top;
+    try {
+      for (; actions.isNotEmpty;) {
+        Action top = actions.removeFirst();
+        await top.performAction();
+      }
+      todoListComponent.serverOffline = false;
+    } catch (exception) {
+      print('exception caught executing ${top.actionName}');
+      todoListComponent.serverOffline = true;
+      actions.addFirst(top);
+      startSync();
+      print('sync failed in the middle');
+    }
+
+    print('sync successfully finished');
+  }
+
+  syncCompletely() {
+    try {
+      //TODO implement
+    } finally {
+      completeSync = false;
+    }
+  }
+
+  queue(Action action) async {
+    if (shouldQueueItems()) {
+      actions.add(action);
+      print("QueueLength: " + actions.length.toString());
+    } else {
+      try {
+        await action.performAction();
+      } catch (exception) {
+        print('exception caught executing ${action.actionName}');
+        todoListComponent.serverOffline = true;
+        actions.add(action);
+        startSync();
+      }
+      print("QueueLength: " + actions.length.toString());
+    }
   }
 
   performAction(String action, {int index, String desc, bool done}) {
@@ -69,8 +145,7 @@ class Action {
         break;
       case 'done':
         print("done ${params['index']}, state: ${params['done']}");
-        return todoListService.changeTaskState(params['index'],
-            params['done']);
+        return todoListService.changeTaskState(params['index'], params['done']);
         break;
       default:
         throw new Exception('invalid args');

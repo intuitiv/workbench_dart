@@ -46,8 +46,15 @@ li material-fab {
     background-color: #ffc107;
 }
 
-.offlinebanner {
+.offlinebanner, .banner {
     display: block;
     max-width: 500px;
     padding: 5px;
+    text-align: center;
+    margin-left: 35%;
+    font-size: medium;
+}
+
+.banner {
+    background-color: #00fa00;
 }

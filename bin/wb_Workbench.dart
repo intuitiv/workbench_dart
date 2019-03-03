@@ -176,8 +176,8 @@ class Task implements Comparable<Task> {
     return "\n>TASK:" +
         state +
         (age > 0 ? " Age:" + age.toString() : "") +
-        " " +
-        details;
+        "\t\t" +
+        details.trim() + "\n\n";
   }
 
   Map<String, dynamic> toJson() => {

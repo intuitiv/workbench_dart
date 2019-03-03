@@ -7,6 +7,6 @@ main(List<String> args) {
 
   String workBenchFile = "/run/media/sainath/WindowsSSD/wb_dart/web/data/_tasks";
   WorkBench wb = WorkBench.parse(WorkBench.readFile(workBenchFile));
-  wb.addTask("\t" + results['task']);
+  wb.addTask(results['task']);
   wb.updateWorkBench(workBenchFile);
 }

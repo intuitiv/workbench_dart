@@ -1,8 +1,13 @@
 <!-- Components info: https://webdev.dartlang.org/components -->
-<div *ngIf="serverOffline" >
+<div *ngIf="serverOffline">
     <material-chip class="offlinebanner" [removable]="true">Server Offline</material-chip>
 </div>
-<div style="padding-top: 20px; padding-left: 100px">
+
+<div *ngIf="amIFree() && !serverOffline">
+    <material-chip class="banner" [removable]="true">No tasks... Learn something new</material-chip>
+</div>
+
+<div style="margin-left: 20%;">
     <br>
     <material-input label="Share your tasks with me... I'll track them for you."
                     autoFocus floatingLabel style="width:80%"
@@ -16,10 +21,6 @@
         <material-icon icon="add"></material-icon>
     </material-fab>
 </div>
-
-<p *ngIf="amIFree()">
-    <strong> Yayy.... No tasks... It's learning-somethin-NEW time...</strong>
-</p>
 
 <div *ngIf="items.isNotEmpty">
     <ul>
