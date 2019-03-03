@@ -8,10 +8,15 @@ import 'package:angular/core.dart';
 class TodoListService {
   List<Task> todoList = <Task>[];
   bool offline = false;
+  bool dirtyMarker = false;
 
   Future<List<Task>> getTodoList() async {
     await fetchTasks();
     return todoList;
+  }
+
+  bool isListDirty() {
+    return dirtyMarker;
   }
 
   fetchTasks() async {
@@ -20,7 +25,11 @@ class TodoListService {
     try {
       await HttpRequest.getString("http://localhost:4040/getAllTasks")
           .then((ret) => (resp = ret));
-    } catch (Exception) {}
+      dirtyMarker = false;
+    } catch (exception) {
+      print(exception.toString() + " while fethcing all tasks");
+      dirtyMarker = true;
+    }
     if (resp != null && resp.isNotEmpty) {
       var json = jsonDecode(resp);
       print(json);
@@ -40,22 +49,22 @@ class TodoListService {
     }
   }
 
-  addTaskEvent(String desc) async {
+  Future<HttpRequest> addTaskEvent(String desc) {
     var data = {'task': desc};
-    await HttpRequest.postFormData("http://localhost:4040/addTask", data);
+    return HttpRequest.postFormData("http://localhost:4040/addTask", data);
   }
 
-  changeTaskState(int id, bool state) async {
-    var data = {'num': id, 'state': state.toString()};
+  Future<HttpRequest> changeTaskState(int id, bool state) {
+    var data = {'num': id.toString(), 'state': state.toString()};
     print(data);
-    await HttpRequest.postFormData(
+    return HttpRequest.postFormData(
         "http://localhost:4040/markTaskAsDone", data);
   }
 
-  deleteTaskEvent(int id) async {
+  Future<HttpRequest> deleteTaskEvent(int id) {
     var data = {'num': id.toString()};
     print(data);
-    await HttpRequest.postFormData("http://localhost:4040/removeTask", data);
+    return  HttpRequest.postFormData("http://localhost:4040/removeTask", data);
   }
 }
 
@@ -74,22 +83,5 @@ class Task {
     this.age = age;
     this.desc = desc.replaceAll('-n-', '\n').trim();
     isDone = false;
-  }
-
-  String urlify(String text) {
-    RegExp urlRegex = new RegExp(r"https?://([^\s<]+)");
-    var ret = addPreviewLink(urlRegex, text);
-
-    RegExp fileRegex = new RegExp(r"file://([^\s]+)");
-    return addPreviewLink(fileRegex, ret);
-  }
-
-  String addPreviewLink(RegExp urlRegex, String text) {
-    return text.replaceAllMapped(
-        urlRegex, (match) => replaceRegexForPreviewLink(match));
-  }
-
-  String replaceRegexForPreviewLink(Match match) {
-    return '<code><a href="${match[0]}" target="_blank">${match[1]} </a></code>';
   }
 }

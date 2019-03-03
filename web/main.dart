@@ -19,14 +19,17 @@ const List<String> tabs = [
   "tech"
 ];
 
+ComponentRef todoComponent;
+
 void main() {
+  todoComponent = runApp(ng.AppComponentNgFactory);
   querySelector('#refreshIcon').onClick.listen(loadData);
   loadWB();
   globals.r = new Random.secure();
   loadFinish();
   window.onBeforeUnload.listen((Event e) {
     BeforeUnloadEvent be = e;
-    if(globals.editInProgress) {
+    if (globals.editInProgress) {
       be.returnValue = "Don't levae";
     }
   });
@@ -54,28 +57,26 @@ loadWB() {
 Future loadFile(String fileName) async {
   Element el = querySelector("#${fileName}");
   if (el != null) {
-    if (fileName == 'tasks') {
-      runApp(ng.AppComponentNgFactory);
-      return;
-    }
-    el.children.clear();
-    el.style.removeProperty("display");
+    if (fileName != 'tasks') {
+      el.children.clear();
+      el.style.removeProperty("display");
 
-    addIcon("icns fas fa-edit", "e_${fileName}", el).onClick.listen(editATab);
+      addIcon("icns fas fa-edit", "e_${fileName}", el).onClick.listen(editATab);
 
-    Element pretext = new Element.pre();
-    el.children.add(pretext);
+      Element pretext = new Element.pre();
+      el.children.add(pretext);
 
-    var fileData;
-    print("loading file ${fileName}");
-    await read("data/_${fileName}").then((val) => fileData = val);
+      var fileData;
+      print("loading file ${fileName}");
+      await read("data/_${fileName}").then((val) => fileData = val);
 
-    String formattedData = format.formatData(fileName, fileData);
-    pretext.setInnerHtml(formattedData,
-        treeSanitizer: new DummyTreeSanitizer());
-    if (fileName == 'tricks') {
-      querySelector("#totd").text =
-          "Trick of the day: " + format.getRandomTrick(fileData);
+      String formattedData = format.formatData(fileName, fileData);
+      pretext.setInnerHtml(formattedData,
+          treeSanitizer: new DummyTreeSanitizer());
+      if (fileName == 'tricks') {
+        querySelector("#totd").text =
+            "Trick of the day: " + format.getRandomTrick(fileData);
+      }
     }
   }
 }
@@ -91,8 +92,10 @@ class DummyTreeSanitizer implements NodeTreeSanitizer {
 
 Element addIcon(String iconClass, String id, Element parent) {
   PreElement icon = new Element.pre();
+  icon.style.paddingTop = '10px';
+  icon.style.paddingRight = '10px';
   icon.innerHtml =
-      "<i class='${iconClass}' id ='${id}' style='padding: 0px 8px 0px 0px;'></i>";
+      "<i class='${iconClass}' id ='${id}'></i>";
   parent.children.add(icon);
   return icon;
 }
@@ -149,6 +152,7 @@ postEdit(Event e) async {
   TextAreaElement tael = querySelector("#t_${tab}");
   var data = {'tab': tab, 'data': tael.value};
   await HttpRequest.postFormData("http://localhost:4040/updatetab", data);
+  await new Future.delayed(const Duration(milliseconds: 200), () => "1");
   await loadFile(tab);
   loadFinish();
   globals.editInProgress = false;

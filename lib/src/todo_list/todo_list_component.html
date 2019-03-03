@@ -1,5 +1,5 @@
 <!-- Components info: https://webdev.dartlang.org/components -->
-<div *ngIf="isOffline()" >
+<div *ngIf="serverOffline" >
     <material-chip class="offlinebanner" [removable]="true">Server Offline</material-chip>
 </div>
 <div style="padding-top: 20px; padding-left: 100px">
