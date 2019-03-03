@@ -33,13 +33,12 @@ class OfflineSync {
       print("syncing.." + DateTime.now().toString());
       try {
         await HttpRequest.getString("http://localhost:4040/health");
-        if (todoListComponent.serverOffline) {
-          if (completeSync) {
-          } else {
-            await deltaSync();
-            return;
-          }
+        if (completeSync) {
+          syncCompletely();
+        } else {
+          deltaSync();
         }
+        return;
       } catch (excep) {
         print('server offline in health ping ' + excep.toString());
         todoListComponent.serverOffline = true;
@@ -80,6 +79,7 @@ class OfflineSync {
   syncCompletely() {
     try {
       //TODO implement
+      print('complete sync support is not added yet');
     } finally {
       completeSync = false;
     }
