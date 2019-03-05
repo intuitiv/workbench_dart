@@ -16,6 +16,7 @@ import 'todo_list_service.dart';
     MaterialIconComponent,
     materialInputDirectives,
     MaterialChipComponent,
+    MaterialProgressComponent,
     NgFor,
     NgIf,
   ],
@@ -51,6 +52,12 @@ class TodoListComponent implements OnInit, OnDestroy {
     items.forEach((task) => !task.isDone ? ret = false : ret = ret);
     return ret;
   }
+  int tasksFinished() {
+    int ret = 0;
+    items.forEach((task) => task.isDone ? ret++ : 0);
+    return ret;
+  }
+
 
   void add() {
     items.add(new Task(newTodo, "new", ""));

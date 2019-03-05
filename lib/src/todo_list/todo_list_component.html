@@ -3,9 +3,9 @@
     <material-chip class="offlinebanner" [removable]="true">Server Offline</material-chip>
 </div>
 
-<div *ngIf="amIFree() && !serverOffline">
-    <material-chip class="banner" [removable]="true">No tasks... Learn something new</material-chip>
-</div>
+<!--<div *ngIf="amIFree() && !serverOffline">-->
+    <!--<material-chip class="banner" [removable]="true">No tasks... Learn something new</material-chip>-->
+<!--</div>-->
 
 <div style="margin-left: 20%;">
     <br>
@@ -21,7 +21,7 @@
         <material-icon icon="add"></material-icon>
     </material-fab>
 </div>
-
+<material-progress [max]="items.length" [activeProgress]="tasksFinished()"></material-progress>
 <div *ngIf="items.isNotEmpty">
     <ul>
         <li *ngFor="let item of items; let i=index">

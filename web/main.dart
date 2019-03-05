@@ -152,7 +152,7 @@ postEdit(Event e) async {
   TextAreaElement tael = querySelector("#t_${tab}");
   var data = {'tab': tab, 'data': tael.value};
   await HttpRequest.postFormData("http://localhost:4040/updatetab", data);
-  await new Future.delayed(const Duration(milliseconds: 200), () => "1");
+  await new Future.delayed(const Duration(milliseconds: 500), () => "1");
   await loadFile(tab);
   loadFinish();
   globals.editInProgress = false;
