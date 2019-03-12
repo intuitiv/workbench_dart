@@ -76,12 +76,13 @@ class TodoListComponent implements OnInit, OnDestroy {
   }
 
   String getBadgeClass(Task item) {
-    String badgeClass;
-    if (item.age == 'new') {
-      badgeClass = 'new';
-    } else {
-      badgeClass = 'ongoing';
+    switch(item.getAge()) {
+      case "new":
+        return 'newbadge';
+      case "done":
+        return 'donebadge';
+      default :
+        return 'ongoingbadge';
     }
-    return badgeClass;
   }
 }

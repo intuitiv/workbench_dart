@@ -64,7 +64,7 @@ class TodoListService {
   Future<HttpRequest> deleteTaskEvent(int id) {
     var data = {'num': id.toString()};
     print(data);
-    return  HttpRequest.postFormData("http://localhost:4040/removeTask", data);
+    return HttpRequest.postFormData("http://localhost:4040/removeTask", data);
   }
 }
 
@@ -73,6 +73,16 @@ class Task {
   String desc;
   bool isDone;
   String age;
+
+  String getAge() {
+    String ret = age;
+    if (isDone) {
+      ret = "done";
+    } else {
+      return age;
+    }
+    return ret;
+  }
 
   Task(String title, String age, String desc) {
     this.title = title;

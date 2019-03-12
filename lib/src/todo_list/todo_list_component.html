@@ -25,14 +25,14 @@
 <div *ngIf="items.isNotEmpty">
     <ul>
         <li *ngFor="let item of items; let i=index">
-            <div style="padding: 10px;">
+            <div>
                 <material-checkbox [(checked)]="item.isDone" (change)="isDone(i)" #done materialTooltip="Mark item as done">
                 </material-checkbox>
-                <span [class.done]="done.checked"><h7 style="text-align:left;"><strong>{{item.title}}</strong></h7></span>
-                <material-chip style='float:right;' [removable]="false" class='{{getBadgeClass(item)}}'>{{item.age}}</material-chip>
+                <span [class.done]="done.checked"><h7 style="text-align:left;"><bold>{{item.title}}</bold></h7></span>
                 <material-fab style='float:right;' mini (trigger)="remove(i)">
                     <material-icon icon="delete"></material-icon>
                 </material-fab>
+                <material-chip style='float:right;' [removable]="false" class='{{getBadgeClass(item)}}'>{{item.getAge()}}</material-chip>
                 <span [class.done]="done.checked"><pre><code>{{item.desc}}</code></pre></span>
             </div>
         </li>

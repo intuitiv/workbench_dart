@@ -26,8 +26,9 @@ li material-fab {
     text-decoration: line-through;
 }
 
-.new, .ongoing, .offlinebanner  {
+.newbadge, .ongoingbadge, .donebadge, .offlinebanner  {
     height: 22px;
+    padding-top: 2px;
     margin: 7px;
     font-size: 75%;
     font-weight: 700;
@@ -36,12 +37,16 @@ li material-fab {
     white-space: nowrap;
     vertical-align: baseline;
 }
-.new {
+.newbadge {
     color: #fff;
     background-color: #17a2b8;
 }
+.donebadge {
+    color: #fff;
+    background-color: #49c358;
+}
 
-.ongoing {
+.ongoingbadge {
     color: #212529;
     background-color: #ffc107;
 }
