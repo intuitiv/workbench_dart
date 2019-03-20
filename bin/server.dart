@@ -36,6 +36,13 @@ void requestReceivedHandler(HttpRequest request, HttpResponse response) async {
       print("health ping: " + DateTime.now().toString());
       request.response.write("success");
       break;
+    case '/getData':
+      var tab = Uri.splitQueryString(payload)['tab'];
+      File f =
+      new File("/run/media/sainath/WindowsSSD/wb_dart/web/data/_" + tab);
+      String data = f.readAsStringSync();
+      request.response.write(data);
+      break;
     case '/updatetab':
       print("handlerequest");
       var data = Uri.splitQueryString(payload)['data'];

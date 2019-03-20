@@ -68,7 +68,8 @@ Future loadFile(String fileName) async {
 
       var fileData;
       print("loading file ${fileName}");
-      await read("data/_${fileName}").then((val) => fileData = val);
+//      await read("data/_${fileName}").then((val) => fileData = val);
+      await readData(fileName).then((ret) => (fileData = ret.responseText));
 
       String formattedData = format.formatData(fileName, fileData);
       pretext.setInnerHtml(formattedData,
@@ -141,10 +142,15 @@ editATab(Event e) {
   addIcon("icns fas fa-eraser", "c_${tab}", querySelector("#${tab}"))
       .onClick
       .listen(cancelEdit);
-  read("data/_${tab}").then((val) => textArea.innerHtml = val);
+//  read("data/_${tab}").then((val) => textArea.innerHtml = val);
+  readData(tab).then((ret) => (textArea.innerHtml = ret.responseText));
   querySelector("#${tab}").style.display = "-webkit-box";
 }
 
+Future<HttpRequest> readData(String tab) async {
+  var data = {'tab': tab};
+    return HttpRequest.postFormData("http://localhost:4040/getData", data);
+}
 postEdit(Event e) async {
   loadStart();
   Element el = e.target;
