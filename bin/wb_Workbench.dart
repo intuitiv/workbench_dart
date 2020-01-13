@@ -73,14 +73,16 @@ class WorkBench {
     shouldProceed = true;
   }
 
-  void removeTask(int id) {
-    tasks.removeAt(id);
+  Task removeTask(int id) {
+    Task t = tasks.removeAt(id);
     shouldProceed = true;
+    return t;
   }
 
   void archiveTask(Task task, String path) {
     File f = new File(path);
-    f.writeAsStringSync(task.toStringWithDate().trim() + "\n\n\n");
+    f.writeAsStringSync(task.toStringWithDate().trim() + "\n\n\n", mode:
+    FileMode.append);
   }
 
   static String currentDate() {
@@ -102,13 +104,16 @@ class WorkBench {
 
   void archiveRequiredTasks(String archiveFile) {
     if (shouldUpdateAge) {
-      for (Task task in tasks) {
-        if (task.state == "done") {
-          archiveTask(task, archiveFile);
-          tasks.remove(task);
-        }
-      }
+      tasks.removeWhere((task) => checkForArchival(task, archiveFile));
     }
+  }
+
+  bool checkForArchival(Task task, String archiveFile) {
+    if (task.state == "done") {
+      archiveTask(task, archiveFile);
+      return true;
+    }
+    return false;
   }
 
   String convertTasksToString(List<Task> tasks) {
@@ -154,6 +159,7 @@ class WorkBench {
   static String readFile(String file) {
     return new File(file).readAsStringSync();
   }
+
 }
 
 @JsonSerializable()

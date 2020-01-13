@@ -108,6 +108,9 @@ class OfflineSync {
       case 'remove':
         params['index'] = index;
         break;
+      case 'defer':
+        params['index'] = index;
+        break;
       case 'add':
         params['desc'] = desc;
         break;
@@ -138,6 +141,10 @@ class Action {
       case 'remove':
         print('delete index: ${params['index']}');
         return todoListService.deleteTaskEvent(params['index']);
+        break;
+      case 'defer':
+        print('deferring index: ${params['index']}');
+        return todoListService.deferTaskEvent(params['index']);
         break;
       case 'add':
         print('added ${params['desc']}');

@@ -32,6 +32,7 @@
                 <material-fab style='float:right;' mini (trigger)="remove(i)">
                     <material-icon icon="delete"></material-icon>
                 </material-fab>
+                <material-chip *ngIf="!item.isDone" style='float:right;' [removable]="false" class='deferbadge' (click)="defer(i)">defer</material-chip>
                 <material-chip style='float:right;' [removable]="false" class='{{getBadgeClass(item)}}'>{{item.getAge()}}</material-chip>
                 <span [class.done]="done.checked"><pre><code>{{item.desc}}</code></pre></span>
             </div>

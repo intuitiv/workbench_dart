@@ -70,6 +70,11 @@ class TodoListComponent implements OnInit, OnDestroy {
     return items.removeAt(index);
   }
 
+  Task defer(int index) {
+    offlineSync.performAction("defer", index: index);
+    return items.removeAt(index);
+  }
+
   Task isDone(int index) {
     offlineSync.performAction("done", index: index, done: items[index].isDone);
     return items[index];

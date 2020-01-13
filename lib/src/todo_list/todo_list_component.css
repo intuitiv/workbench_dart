@@ -26,7 +26,7 @@ li material-fab {
     text-decoration: line-through;
 }
 
-.newbadge, .ongoingbadge, .donebadge, .offlinebanner  {
+.newbadge, .ongoingbadge, .donebadge, .offlinebanner, .deferbadge  {
     height: 22px;
     padding-top: 2px;
     margin: 7px;
@@ -44,6 +44,10 @@ li material-fab {
 .donebadge {
     color: #fff;
     background-color: #49c358;
+}
+.deferbadge {
+    color: #fff;
+    background-color: black;
 }
 
 .ongoingbadge {

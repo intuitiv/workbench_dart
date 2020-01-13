@@ -22,6 +22,7 @@ const List<String> tabs = [
 ComponentRef todoComponent;
 
 void main() {
+  loadStart();
   todoComponent = runApp(ng.AppComponentNgFactory);
   querySelector('#refreshIcon').onClick.listen(loadData);
   loadWB();
@@ -36,11 +37,13 @@ void main() {
 }
 
 loadFinish() async {
+  print('load finish');
   querySelector("#loader").style.visibility = "hidden";
   querySelector("#maincontent").style.removeProperty("visibility");
 }
 
 loadStart() async {
+  print('load start');
   querySelector("#maincontent").style.visibility = "hidden";
   querySelector("#loader").style.removeProperty("visibility");
 }

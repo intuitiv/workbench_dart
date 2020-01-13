@@ -83,6 +83,18 @@ void requestReceivedHandler(HttpRequest request, HttpResponse response) async {
       wb.updateWorkBench(workBenchFile);
       request.response.write("{'status' : 'OK'}");
       break;
+    case '/deferTask':
+      var taskID = Uri.splitQueryString(payload)['num'];
+      print("defer ${taskID}");
+      String workBenchFile =
+          "/run/media/sainath/WindowsSSD/wb_dart/web/data/_tasks";
+      WorkBench wb = WorkBench.parse(WorkBench.readFile(workBenchFile));
+      Task t = wb.removeTask(int.parse(taskID));
+      wb.archiveTask(t, "/run/media/sainath/WindowsSSD/wb_dart/web/data"
+          "/Archive/deferredTasks.txt");
+      wb.updateWorkBench(workBenchFile);
+      request.response.write("{'status' : 'OK'}");
+      break;
 
     case '/getAllTasks':
       print("getTasks");

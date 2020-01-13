@@ -66,6 +66,11 @@ class TodoListService {
     print(data);
     return HttpRequest.postFormData("http://localhost:4040/removeTask", data);
   }
+  Future<HttpRequest> deferTaskEvent(int id) {
+    var data = {'num': id.toString()};
+    print(data);
+    return HttpRequest.postFormData("http://localhost:4040/deferTask", data);
+  }
 }
 
 class Task {
